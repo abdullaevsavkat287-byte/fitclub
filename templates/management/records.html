@@ -1,0 +1,121 @@
+
+{% extends "management/base.html" %}
+
+{% block title %}{{ section_title }} | FitClub PRO{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">FITCLUB / MANAGEMENT</div>
+        <h1>{{ section_title }}<span>.</span></h1>
+        <p>Ma'lumotlarni boshqarish markazi</p>
+    </div>
+
+    {% if editable %}
+        <a class="action-btn"
+           href="{% url 'management:add' section %}">
+            <i class="bi bi-plus-lg"></i>
+            Yangi qo‘shish
+        </a>
+    {% endif %}
+</div>
+
+<section class="panel">
+
+    <div class="panel-heading">
+        <div>
+            <h3>
+                <i class="bi bi-database"></i>
+                {{ section_title }} ro‘yxati
+            </h3>
+            <p>Jami: {{ page.paginator.count }} ta yozuv</p>
+        </div>
+    </div>
+
+    {% if has_search %}
+    <form method="get" class="search-form">
+        <input type="search"
+               name="q"
+               value="{{ search }}"
+               placeholder="Qidirish...">
+
+        <button type="submit" class="action-btn">
+            <i class="bi bi-search"></i>
+            Qidirish
+        </button>
+    </form>
+    {% endif %}
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ma'lumot</th>
+                    {% if editable %}
+                        <th>Amallar</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for obj in page %}
+                <tr>
+                    <td>#{{ obj.pk }}</td>
+
+                    <td>
+                        <strong>{{ obj }}</strong>
+                    </td>
+
+                    {% if editable %}
+                    <td>
+                        <div class="table-actions">
+                            <a class="edit-btn"
+                               href="{% url 'management:edit' section obj.pk %}">
+                                <i class="bi bi-pencil-square"></i>
+                                Tahrirlash
+                            </a>
+
+                            <form method="post"
+                                  action="{% url 'management:delete' section obj.pk %}"
+                                  onsubmit="return confirm('Haqiqatan o‘chirasizmi?')">
+                                {% csrf_token %}
+                                <button class="delete-btn" type="submit">
+                                    <i class="bi bi-trash"></i>
+                                    O‘chirish
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="empty">
+                        Hozircha ma'lumot mavjud emas.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}&q={{ search|urlencode }}">
+                <i class="bi bi-chevron-left"></i> Oldingi
+            </a>
+        {% endif %}
+
+        <span>{{ page.number }} / {{ page.paginator.num_pages }}</span>
+
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}&q={{ search|urlencode }}">
+                Keyingi <i class="bi bi-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

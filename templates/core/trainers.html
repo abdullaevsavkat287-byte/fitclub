@@ -1,0 +1,66 @@
+
+{% extends 'base.html' %}
+{% block title %}Trenerlar | FitClub{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <span class="section-tag">OUR PROFESSIONAL TEAM</span>
+        <h1>BIZNING <span>TRENERLAR.</span></h1>
+        <p>FitClub professional trenerlari bilan tanishing.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="cards-grid">
+
+            {% for trainer in trainers %}
+            <div class="trainer-card reveal">
+
+                <div class="trainer-photo">
+                    {% if trainer.image %}
+                        <img src="{{ trainer.image.url }}" alt="{{ trainer.full_name }}">
+                    {% else %}
+                        <div class="image-placeholder">
+                            <i class="bi bi-person-standing"></i>
+                        </div>
+                    {% endif %}
+
+                    <span class="trainer-experience">
+                        {{ trainer.experience }} yil tajriba
+                    </span>
+                </div>
+
+                <div class="trainer-info">
+                    <span class="mini-label">
+                        {{ trainer.get_specialty_display }}
+                    </span>
+
+                    <h3>{{ trainer.full_name }}</h3>
+                    <p>{{ trainer.description }}</p>
+
+                    {% if trainer.instagram %}
+                    <a href="{{ trainer.instagram }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="social-link">
+                        <i class="bi bi-instagram"></i>
+                        Instagram
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="empty-state">
+                <i class="bi bi-people"></i>
+                <h3>Trenerlar mavjud emas</h3>
+                <p>Admin paneldan yangi trener qo‘shing.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}

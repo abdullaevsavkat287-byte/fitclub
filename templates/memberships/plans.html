@@ -1,0 +1,90 @@
+
+{% extends 'base.html' %}
+{% block title %}Abonementlar | FitClub{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <span class="section-tag">MEMBERSHIP PLANS</span>
+        <h1>O‘Z TARIFINGNI <span>TANLA.</span></h1>
+        <p>O‘zingizga qulay abonement orqali FitClub'ga qo‘shiling.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="pricing-grid">
+
+            {% for plan in plans %}
+            <div class="pricing-card {% if plan.is_popular %}popular{% endif %} reveal">
+
+                {% if plan.is_popular %}
+                <div class="popular-ribbon">
+                    <i class="bi bi-stars"></i>
+                    ENG OMMABOP
+                </div>
+                {% endif %}
+
+                <div class="pricing-top">
+                    <div class="pricing-symbol">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </div>
+
+                    <h3>{{ plan.name }}</h3>
+                    <p>{{ plan.description }}</p>
+                </div>
+
+                <div class="pricing-price">
+                    <strong>{{ plan.price|floatformat:0 }}</strong>
+                    <span>
+                        so‘m / {{ plan.duration_days }} kun
+                    </span>
+                </div>
+
+                <div class="pricing-divider"></div>
+
+                <div class="pricing-features">
+                    {% for feature in plan.feature_list %}
+                    <div>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>{{ feature }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'subscribe' plan.id %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="btn {% if plan.is_popular %}btn-primary{% else %}btn-outline{% endif %} btn-full">
+                        Obuna so‘rovi yuborish
+                        <i class="bi bi-arrow-up-right"></i>
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'register' %}"
+                   class="btn {% if plan.is_popular %}btn-primary{% else %}btn-outline{% endif %} btn-full">
+                    A'zo bo‘lish
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+                {% endif %}
+            </div>
+
+            {% empty %}
+            <div class="empty-state">
+                <i class="bi bi-credit-card"></i>
+                <h3>Abonementlar mavjud emas</h3>
+                <p>Admin panel orqali tariflar qo‘shing.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <div class="pricing-note">
+            <i class="bi bi-info-circle"></i>
+            Obuna so‘rovi administrator tomonidan tasdiqlanadi.
+            Hozircha haqiqiy onlayn to‘lov mavjud emas.
+        </div>
+    </div>
+</section>
+{% endblock %}

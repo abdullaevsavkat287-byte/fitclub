@@ -1,0 +1,272 @@
+
+{% extends 'base.html' %}
+{% block title %}Shaxsiy kabinet | FitClub{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="container">
+
+        <div class="dashboard-heading">
+            <div>
+                <span class="section-tag">MEMBER DASHBOARD</span>
+                <h1>
+                    SALOM,
+                    <span>{{ user.first_name|default:user.username|upper }}!</span>
+                </h1>
+                <p>FitClub shaxsiy kabinetingizga xush kelibsiz.</p>
+            </div>
+
+            <a href="{% url 'plans' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                Abonementlar
+            </a>
+        </div>
+
+        <div class="dashboard-grid">
+
+            <aside class="profile-panel">
+                <div class="profile-avatar">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Profil rasmi">
+                    {% else %}
+                        <i class="bi bi-person-fill"></i>
+                    {% endif %}
+                </div>
+
+                <h2>{{ user.get_full_name|default:user.username }}</h2>
+                <p>@{{ user.username }}</p>
+
+                <div class="profile-divider"></div>
+
+                <div class="profile-detail">
+                    <i class="bi bi-envelope"></i>
+                    <span>{{ user.email|default:"Email mavjud emas" }}</span>
+                </div>
+
+                <div class="profile-detail">
+                    <i class="bi bi-calendar"></i>
+                    <span>
+                        A'zo bo‘lgan:
+                        {{ user.date_joined|date:"d.m.Y" }}
+                    </span>
+                </div>
+
+                <div class="profile-detail">
+                    <i class="bi bi-credit-card"></i>
+                    <span>
+                        Jami obunalar: {{ subscription_count }}
+                    </span>
+                </div>
+
+                <div class="profile-divider"></div>
+
+                <div class="profile-bottom">
+                    <i class="bi bi-shield-check"></i>
+                    FITCLUB MEMBER
+                </div>
+            </aside>
+
+            <div class="dashboard-main">
+
+                {% if active_subscription %}
+
+                <div class="membership-panel">
+                    <div class="membership-top">
+                        <div>
+                            <span class="membership-label">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                                ACTIVE MEMBERSHIP
+                            </span>
+
+                            <h2>{{ active_subscription.plan.name }}</h2>
+                            <p>Sizning abonementingiz faol.</p>
+                        </div>
+
+                        <div class="membership-status active">
+                            <span class="pulse-dot"></span>
+                            FAOL
+                        </div>
+                    </div>
+
+                    <div class="membership-days">
+                        <div>
+                            <strong>{{ active_subscription.days_left }}</strong>
+                            <span>KUN QOLDI</span>
+                        </div>
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <div class="progress-labels">
+                        <span>Qolgan muddat</span>
+                        <span>{{ active_subscription.progress }}%</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div class="progress-fill"
+                             style="width: {{ active_subscription.progress }}%">
+                        </div>
+                    </div>
+
+                    <div class="membership-dates">
+                        <div>
+                            <span>Boshlangan sana</span>
+                            <strong>
+                                {{ active_subscription.start_date|date:"d.m.Y" }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Tugash sanasi</span>
+                            <strong>
+                                {{ active_subscription.end_date|date:"d.m.Y" }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% elif pending_subscription %}
+
+                <div class="membership-panel pending-panel">
+                    <div class="membership-top">
+                        <div>
+                            <span class="membership-label">
+                                MEMBERSHIP REQUEST
+                            </span>
+
+                            <h2>{{ pending_subscription.plan.name }}</h2>
+                            <p>Obuna so‘rovingiz yuborildi.</p>
+                        </div>
+
+                        <div class="membership-status pending">
+                            <i class="bi bi-clock"></i>
+                            KUTILMOQDA
+                        </div>
+                    </div>
+
+                    <div class="pending-content">
+                        <i class="bi bi-hourglass-split"></i>
+                        <h3>Tasdiqlash kutilmoqda</h3>
+                        <p>
+                            Administrator obunangizni tasdiqlagach,
+                            abonement faollashadi.
+                        </p>
+                    </div>
+                </div>
+
+                {% else %}
+
+                <div class="membership-panel empty-membership">
+                    <i class="bi bi-lightning-charge"></i>
+
+                    <h2>FAOL ABONEMENT MAVJUD EMAS</h2>
+
+                    <p>
+                        FitClub imkoniyatlaridan foydalanish uchun
+                        o‘zingizga mos tarifni tanlang.
+                    </p>
+
+                    <a href="{% url 'plans' %}" class="btn btn-primary btn-lg">
+                        ABONEMENT TANLASH
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+                {% endif %}
+
+                <div class="dashboard-stats">
+                    <div class="dashboard-stat">
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Jami obunalar</span>
+                        <strong>{{ subscription_count }}</strong>
+                    </div>
+
+                    <div class="dashboard-stat">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Faol obuna</span>
+                        <strong>
+                            {% if active_subscription %}1{% else %}0{% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="dashboard-stat">
+                        <i class="bi bi-hourglass"></i>
+                        <span>Qolgan kun</span>
+                        <strong>
+                            {% if active_subscription %}
+                                {{ active_subscription.days_left }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-header">
+                <div>
+                    <span class="section-tag">MEMBERSHIP HISTORY</span>
+                    <h2>OBUNALAR <span>TARIXI.</span></h2>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tarif</th>
+                            <th>Narxi</th>
+                            <th>Boshlangan sana</th>
+                            <th>Tugash sanasi</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for subscription in subscriptions %}
+                        <tr>
+                            <td>
+                                <strong>{{ subscription.plan.name }}</strong>
+                            </td>
+
+                            <td>
+                                {{ subscription.plan.price|floatformat:0 }} so‘m
+                            </td>
+
+                            <td>
+                                {{ subscription.start_date|date:"d.m.Y"|default:"—" }}
+                            </td>
+
+                            <td>
+                                {{ subscription.end_date|date:"d.m.Y"|default:"—" }}
+                            </td>
+
+                            <td>
+                                {% if subscription.display_status == 'active' %}
+                                    <span class="table-status active">Faol</span>
+                                {% elif subscription.display_status == 'pending' %}
+                                    <span class="table-status pending">Kutilmoqda</span>
+                                {% elif subscription.display_status == 'expired' %}
+                                    <span class="table-status expired">Tugagan</span>
+                                {% else %}
+                                    <span class="table-status expired">Bekor qilingan</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="no-history">
+                                Sizda hozircha obunalar tarixi yo‘q.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

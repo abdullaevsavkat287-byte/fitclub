@@ -1,0 +1,460 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d12">
+
+    <title>
+        {% block title %}
+            FitClub | Premium Fitness
+        {% endblock %}
+    </title>
+
+    <!-- GOOGLE FONTS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- BOOTSTRAP ICONS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- MAIN CSS -->
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+    <!-- ADMIN BUTTON STYLE -->
+    <style>
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-panel-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            padding: 12px 19px;
+            border-radius: 11px;
+
+            background: #b8ff4c;
+            color: #101710 !important;
+            border: 1px solid #b8ff4c;
+
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+
+            transition: all 0.25s ease;
+        }
+
+        .admin-panel-btn:hover {
+            background: #d5ff93;
+            border-color: #d5ff93;
+            color: #101710 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(184, 255, 76, 0.25);
+        }
+
+        .admin-panel-btn i {
+            font-size: 17px;
+        }
+
+        .logout-form {
+            display: flex;
+            align-items: center;
+            margin: 0;
+        }
+
+        .admin-mobile-link {
+            display: none;
+        }
+
+        @media (max-width: 1100px) {
+            .admin-panel-btn {
+                display: none;
+            }
+
+            .admin-mobile-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: #b8ff4c !important;
+                font-weight: 800;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- =====================================
+             NAVBAR
+===================================== -->
+<header class="navbar">
+
+    <div class="container nav-inner">
+
+        <!-- LOGO -->
+        <a href="{% url 'home' %}" class="logo">
+
+            <span class="logo-icon">
+                <i class="bi bi-lightning-charge-fill"></i>
+            </span>
+
+            FIT<span>CLUB</span>
+
+        </a>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button
+            type="button"
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Menyuni ochish"
+            aria-controls="navLinks"
+            aria-expanded="false"
+        >
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-links" id="navLinks">
+
+            <a href="{% url 'home' %}">
+                Bosh sahifa
+            </a>
+
+            <a href="{% url 'classes' %}">
+                Mashg‘ulotlar
+            </a>
+
+            <a href="{% url 'trainers' %}">
+                Trenerlar
+            </a>
+
+            <a href="{% url 'plans' %}">
+                Abonementlar
+            </a>
+
+            <!-- MOBILE ADMIN LINK -->
+            {% if user.is_authenticated and user.is_staff %}
+
+                <a
+                    href="{% url 'management:dashboard' %}"
+                    class="admin-mobile-link"
+                >
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Admin Panel
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+        <!-- NAV ACTIONS -->
+        <div class="nav-actions">
+
+            {% if user.is_authenticated %}
+
+                <!-- =========================
+                     ADMIN PANEL BUTTON
+                ========================= -->
+                {% if user.is_staff %}
+
+                    <a
+                        href="{% url 'management:dashboard' %}"
+                        class="admin-panel-btn"
+                        title="FitClub PRO Admin Panel"
+                    >
+                        <i class="bi bi-shield-lock-fill"></i>
+                        Admin Panel
+                    </a>
+
+                {% endif %}
+
+
+                <!-- =========================
+                     USER DASHBOARD
+                ========================= -->
+                <a
+                    href="{% url 'dashboard' %}"
+                    class="btn btn-outline"
+                >
+                    <i class="bi bi-person-circle"></i>
+                    Kabinet
+                </a>
+
+
+                <!-- =========================
+                     LOGOUT
+                ========================= -->
+                <form
+                    action="{% url 'logout' %}"
+                    method="post"
+                    class="logout-form"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout-icon"
+                        title="Chiqish"
+                        aria-label="Hisobdan chiqish"
+                    >
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <!-- LOGIN -->
+                <a
+                    href="{% url 'login' %}"
+                    class="login-link"
+                >
+                    Kirish
+                </a>
+
+                <!-- REGISTER -->
+                <a
+                    href="{% url 'register' %}"
+                    class="btn btn-primary"
+                >
+                    A'zo bo‘lish
+
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================
+             MESSAGES
+===================================== -->
+{% if messages %}
+
+    <div class="message-container">
+
+        {% for message in messages %}
+
+            <div
+                class="alert-message {{ message.tags }}"
+                role="alert"
+            >
+
+                {% if message.tags == "success" %}
+
+                    <i class="bi bi-check-circle-fill"></i>
+
+                {% elif message.tags == "error" %}
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                {% elif message.tags == "warning" %}
+
+                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                {% else %}
+
+                    <i class="bi bi-info-circle-fill"></i>
+
+                {% endif %}
+
+                <span>{{ message }}</span>
+
+                <button
+                    type="button"
+                    onclick="this.parentElement.remove()"
+                    aria-label="Xabarni yopish"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+
+<!-- =====================================
+             MAIN CONTENT
+===================================== -->
+<main id="main-content">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<!-- =====================================
+             FOOTER
+===================================== -->
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+            <!-- ABOUT -->
+            <div>
+
+                <a
+                    href="{% url 'home' %}"
+                    class="logo"
+                >
+
+                    <span class="logo-icon">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                    </span>
+
+                    FIT<span>CLUB</span>
+
+                </a>
+
+                <p class="footer-description">
+                    FitClub — zamonaviy sport zali va
+                    abonementlarni boshqarish platformasi.
+
+                    Professional trenerlar, zamonaviy
+                    mashg‘ulotlar va qulay abonementlar
+                    bilan faol hayot bugundan boshlanadi.
+                </p>
+
+            </div>
+
+
+            <!-- PAGES -->
+            <div>
+
+                <h4>Sahifalar</h4>
+
+                <a href="{% url 'home' %}">
+                    Bosh sahifa
+                </a>
+
+                <a href="{% url 'classes' %}">
+                    Mashg‘ulotlar
+                </a>
+
+                <a href="{% url 'trainers' %}">
+                    Trenerlar
+                </a>
+
+                <a href="{% url 'plans' %}">
+                    Abonementlar
+                </a>
+
+            </div>
+
+
+            <!-- ACCOUNT -->
+            <div>
+
+                <h4>Foydalanuvchi</h4>
+
+                {% if user.is_authenticated %}
+
+                    <a href="{% url 'dashboard' %}">
+                        Shaxsiy kabinet
+                    </a>
+
+                    {% if user.is_staff %}
+
+                        <a href="{% url 'management:dashboard' %}">
+                            Admin Panel
+                        </a>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <a href="{% url 'register' %}">
+                        Ro‘yxatdan o‘tish
+                    </a>
+
+                    <a href="{% url 'login' %}">
+                        Kirish
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ABOUT -->
+            <div>
+
+                <h4>Biz haqimizda</h4>
+
+                <p>Premium Fitness Experience</p>
+
+                <p>
+                    <i class="bi bi-geo-alt"></i>
+                    O‘zbekiston
+                </p>
+
+                <p>
+                    <i class="bi bi-award"></i>
+                    Professional mashg‘ulotlar
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER BOTTOM -->
+        <div class="footer-bottom">
+
+            <span>
+                © {% now "Y" %} FitClub.
+                Barcha huquqlar himoyalangan.
+            </span>
+
+            <span>
+                FITCLUB — YOUR FITNESS JOURNEY
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================
+             JAVASCRIPT
+===================================== -->
+<script src="{% static 'js/main.js' %}"></script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

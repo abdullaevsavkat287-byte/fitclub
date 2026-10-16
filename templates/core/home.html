@@ -1,0 +1,266 @@
+
+{% extends 'base.html' %}
+{% block title %}FitClub | Bosh sahifa{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-glow"></div>
+
+    <div class="container hero-grid">
+        <div class="hero-content reveal">
+            <div class="eyebrow">
+                <span class="pulse-dot"></span>
+                PREMIUM FITNESS EXPERIENCE
+            </div>
+
+            <h1>
+                O‘ZINGNI<br>
+                <span>KASHF ET.</span><br>
+                FAOL BO‘L.
+            </h1>
+
+            <p>
+                Zamonaviy sport zali, tajribali trenerlar,
+                turli mashg‘ulotlar va qulay abonementlar.
+                FitClub bilan o‘z maqsadlaringiz sari harakat qiling.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="{% url 'plans' %}" class="btn btn-primary btn-lg">
+                    HOZIR BOSHLASH <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+                <a href="{% url 'classes' %}" class="btn btn-outline btn-lg">
+                    Mashg‘ulotlar
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div>
+                    <strong>{{ trainer_count }}+</strong>
+                    <span>Trenerlar</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div>
+                    <strong>{{ workout_count }}+</strong>
+                    <span>Mashg‘ulotlar</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div>
+                    <strong>24/7</strong>
+                    <span>Onlayn kabinet</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual reveal">
+            <div class="hero-image"></div>
+            <div class="hero-image-overlay"></div>
+
+            <div class="floating-card floating-top">
+                <div class="floating-icon">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <div>
+                    <strong>FITCLUB PREMIUM</strong>
+                    <small>Har kuni yangi imkoniyat</small>
+                </div>
+            </div>
+
+            <div class="floating-card floating-bottom">
+                <i class="bi bi-activity"></i>
+                <div>
+                    <strong>STAY ACTIVE</strong>
+                    <small>Train • Improve • Repeat</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-bottom-line">
+        <div class="container">
+            <span>ENERGY</span>
+            <i class="bi bi-asterisk"></i>
+            <span>DISCIPLINE</span>
+            <i class="bi bi-asterisk"></i>
+            <span>PROGRESS</span>
+            <i class="bi bi-asterisk"></i>
+            <span>FITCLUB</span>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="section-tag">WHY CHOOSE US</span>
+            <h2>NEGA AYNAN <span>FITCLUB?</span></h2>
+            <p>
+                Biz sport bilan shug‘ullanishni yanada qulay
+                va zamonaviy qilishga intilamiz.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <span class="feature-number">01 /</span>
+                <h3>Professional trenerlar</h3>
+                <p>Tajribali mutaxassislar va sifatli mashg‘ulotlar.</p>
+                <a href="{% url 'trainers' %}">
+                    Batafsil <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <span class="feature-number">02 /</span>
+                <h3>Turli mashg‘ulotlar</h3>
+                <p>Yoga, Kardio, Fitness va kuch mashg‘ulotlari.</p>
+                <a href="{% url 'classes' %}">
+                    Batafsil <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+
+            <div class="feature-card reveal">
+                <div class="feature-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+                <span class="feature-number">03 /</span>
+                <h3>Smart kabinet</h3>
+                <p>Obuna muddati va statusini onlayn kuzating.</p>
+                <a href="{% url 'dashboard' %}">
+                    Batafsil <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="section-tag">OUR PROGRAMS</span>
+            <h2>MASHG‘ULOT <span>DASTURLARI.</span></h2>
+            <p>O‘zingizga mos dasturni tanlang.</p>
+        </div>
+
+        <div class="cards-grid">
+            {% for workout in workouts %}
+            <div class="image-card reveal">
+                <div class="image-card-media">
+                    {% if workout.image %}
+                        <img src="{{ workout.image.url }}" alt="{{ workout.title }}">
+                    {% else %}
+                        <div class="image-placeholder">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                    {% endif %}
+                    <span class="card-badge">
+                        {{ workout.duration }} daqiqa
+                    </span>
+                </div>
+
+                <div class="image-card-content">
+                    <span class="mini-label">
+                        {{ workout.get_level_display }}
+                    </span>
+                    <h3>{{ workout.title }}</h3>
+                    <p>{{ workout.description|truncatewords:18 }}</p>
+                    <a href="{% url 'classes' %}">
+                        Batafsil <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="bi bi-activity"></i>
+                <h3>Mashg‘ulotlar tez orada qo‘shiladi</h3>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="section-action">
+            <a href="{% url 'classes' %}" class="btn btn-outline btn-lg">
+                Barcha mashg‘ulotlar
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-heading reveal">
+            <span class="section-tag">OUR TEAM</span>
+            <h2>PROFESSIONAL <span>TRENERLAR.</span></h2>
+            <p>FitClub mutaxassislari bilan tanishing.</p>
+        </div>
+
+        <div class="cards-grid">
+            {% for trainer in trainers %}
+            <div class="trainer-card reveal">
+                <div class="trainer-photo">
+                    {% if trainer.image %}
+                        <img src="{{ trainer.image.url }}" alt="{{ trainer.full_name }}">
+                    {% else %}
+                        <div class="image-placeholder">
+                            <i class="bi bi-person-standing"></i>
+                        </div>
+                    {% endif %}
+
+                    <span class="trainer-experience">
+                        {{ trainer.experience }} yil tajriba
+                    </span>
+                </div>
+
+                <div class="trainer-info">
+                    <span class="mini-label">
+                        {{ trainer.get_specialty_display }}
+                    </span>
+                    <h3>{{ trainer.full_name }}</h3>
+                    <p>{{ trainer.description|truncatewords:16 }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <h3>Trenerlar hali qo‘shilmagan</h3>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="section-action">
+            <a href="{% url 'trainers' %}" class="btn btn-outline btn-lg">
+                Barcha trenerlar
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box reveal">
+            <span class="section-tag">JOIN FITCLUB</span>
+            <h2>
+                BUGUN BOSHLANG.<br>
+                <span>FAOL HAYOT SARI.</span>
+            </h2>
+            <p>
+                FitClub a'zosi bo‘ling va o‘zingizga mos
+                abonementni tanlang.
+            </p>
+            <a href="{% url 'plans' %}" class="btn btn-dark btn-lg">
+                ABONEMENT TANLASH
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

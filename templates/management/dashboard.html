@@ -1,0 +1,196 @@
+
+{% extends "management/base.html" %}
+
+{% block title %}Dashboard | FitClub Pro{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">OVERVIEW / DASHBOARD</div>
+        <h1>Boshqaruv <span>markazi.</span></h1>
+        <p>FitClub faoliyati va muhim ko‘rsatkichlar.</p>
+    </div>
+    <div class="date-chip">
+        <i class="bi bi-calendar3"></i> {{ today|date:"d.m.Y" }}
+    </div>
+</div>
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>Foydalanuvchilar</span>
+            <div class="stat-icon green"><i class="bi bi-people"></i></div>
+        </div>
+        <h2>{{ total_users }}</h2>
+        <div class="stat-footer">Jami ro‘yxatdan o‘tganlar</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>Faol abonementlar</span>
+            <div class="stat-icon blue"><i class="bi bi-credit-card"></i></div>
+        </div>
+        <h2>{{ active_subscriptions }}</h2>
+        <div class="stat-footer">Hozir amal qilayotganlar</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>Kutilayotgan so‘rovlar</span>
+            <div class="stat-icon orange"><i class="bi bi-hourglass-split"></i></div>
+        </div>
+        <h2>{{ pending_subscriptions }}</h2>
+        <div class="stat-footer">Tasdiqlash talab qilinadi</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>Trenerlar</span>
+            <div class="stat-icon purple"><i class="bi bi-person-badge"></i></div>
+        </div>
+        <h2>{{ total_trainers }}</h2>
+        <div class="stat-footer">Jami trenerlar soni</div>
+    </div>
+
+</div>
+
+<div class="secondary-stats">
+    <div class="mini-stat">
+        <i class="bi bi-activity"></i>
+        <div><strong>{{ total_workouts }}</strong><span>Mashg‘ulotlar</span></div>
+    </div>
+    <div class="mini-stat">
+        <i class="bi bi-gem"></i>
+        <div><strong>{{ total_plans }}</strong><span>Tariflar</span></div>
+    </div>
+    <div class="mini-stat">
+        <i class="bi bi-calendar-x"></i>
+        <div><strong>{{ expiring_subscriptions }}</strong><span>7 kunda muddati tugaydiganlar</span></div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3><i class="bi bi-credit-card"></i> So‘nggi obunalar</h3>
+                <p>Eng yangi abonement so‘rovlari</p>
+            </div>
+            <a href="{% url 'admin:memberships_subscription_changelist' %}"
+               class="panel-link">Barchasi <i class="bi bi-arrow-up-right"></i></a>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foydalanuvchi</th>
+                        <th>Tarif</th>
+                        <th>Holat</th>
+                        <th>Sana</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subscription in recent_subscriptions %}
+                    <tr>
+                        <td>
+                            <div class="table-user">
+                                <div class="small-avatar">
+                                    {{ subscription.user.username|first|upper }}
+                                </div>
+                                <strong>{{ subscription.user.username }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ subscription.plan.name }}</td>
+                        <td>
+                            {% if subscription.status == "active" %}
+                                <span class="status success">Faol</span>
+                            {% elif subscription.status == "pending" %}
+                                <span class="status warning">Kutilmoqda</span>
+                            {% else %}
+                                <span class="status muted">{{ subscription.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ subscription.created_at|date:"d.m.Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty">Hozircha obunalar yo‘q.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3><i class="bi bi-person-plus"></i> Yangi a'zolar</h3>
+                <p>Oxirgi ro‘yxatdan o‘tganlar</p>
+            </div>
+        </div>
+
+        <div class="member-list">
+            {% for member in recent_users %}
+                <div class="member-item">
+                    <div class="table-user">
+                        <div class="small-avatar">
+                            {{ member.username|first|upper }}
+                        </div>
+                        <div>
+                            <strong>{{ member.username }}</strong>
+                            <small>{{ member.email|default:"Email ko‘rsatilmagan" }}</small>
+                        </div>
+                    </div>
+                    <span class="member-date">{{ member.date_joined|date:"d.m" }}</span>
+                </div>
+            {% empty %}
+                <p class="empty">Foydalanuvchilar yo‘q.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+<section class="panel quick-panel">
+    <div class="panel-heading">
+        <div>
+            <h3><i class="bi bi-lightning-charge"></i> Tezkor boshqaruv</h3>
+            <p>Ko‘p ishlatiladigan amallar</p>
+        </div>
+    </div>
+
+    <div class="quick-grid">
+        <a href="{% url 'admin:core_trainer_add' %}" class="quick-action">
+            <i class="bi bi-person-plus"></i>
+            <strong>Trener qo‘shish</strong>
+            <span>Yangi trener yaratish</span>
+        </a>
+
+        <a href="{% url 'admin:core_workout_add' %}" class="quick-action">
+            <i class="bi bi-plus-circle"></i>
+            <strong>Mashg‘ulot qo‘shish</strong>
+            <span>Yangi mashg‘ulot yaratish</span>
+        </a>
+
+        <a href="{% url 'admin:memberships_membershipplan_add' %}"
+           class="quick-action">
+            <i class="bi bi-gem"></i>
+            <strong>Tarif qo‘shish</strong>
+            <span>Abonement yaratish</span>
+        </a>
+
+        <a href="{% url 'admin:memberships_subscription_changelist' %}"
+           class="quick-action">
+            <i class="bi bi-check2-circle"></i>
+            <strong>Obunalarni tekshirish</strong>
+            <span>So‘rovlarni boshqarish</span>
+        </a>
+    </div>
+</section>
+
+{% endblock %}

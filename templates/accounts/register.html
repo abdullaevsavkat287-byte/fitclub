@@ -1,0 +1,72 @@
+
+{% extends 'base.html' %}
+{% block title %}Ro‘yxatdan o‘tish | FitClub{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-background"></div>
+    <div class="auth-card register-card">
+        <div class="auth-icon">
+            <i class="bi bi-person-plus"></i>
+        </div>
+
+        <span class="section-tag">JOIN FITCLUB</span>
+        <h1>YANGI BOSQICHNI <span>BOSHLANG.</span></h1>
+        <p class="auth-subtitle">Bepul hisob yarating va FitClub'ga qo‘shiling.</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="form-error">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_first_name">Ism</label>
+                    {{ form.first_name }}
+                    {{ form.first_name.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="id_last_name">Familiya</label>
+                    {{ form.last_name }}
+                    {{ form.last_name.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password1">Parol</label>
+                {{ form.password1 }}
+                {{ form.password1.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">Parolni tasdiqlash</label>
+                {{ form.password2 }}
+                {{ form.password2.errors }}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg">
+                HISOB YARATISH <i class="bi bi-arrow-right"></i>
+            </button>
+        </form>
+
+        <p class="auth-bottom">
+            Hisobingiz bormi?
+            <a href="{% url 'login' %}">Kirish</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

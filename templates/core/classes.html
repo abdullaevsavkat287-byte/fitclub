@@ -1,0 +1,61 @@
+
+{% extends 'base.html' %}
+{% block title %}Mashg‘ulotlar | FitClub{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <span class="section-tag">FITCLUB PROGRAMS</span>
+        <h1>MASHG‘ULOT <span>TURLARI</span></h1>
+        <p>O‘zingizga mos mashg‘ulotni tanlang.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="cards-grid">
+            {% for workout in workouts %}
+            <div class="image-card reveal">
+                <div class="image-card-media">
+                    {% if workout.image %}
+                    <img src="{{ workout.image.url }}" alt="{{ workout.title }}">
+                    {% else %}
+                    <div class="image-placeholder">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    {% endif %}
+                    <span class="card-badge">
+                        <i class="bi bi-clock"></i> {{ workout.duration }} daqiqa
+                    </span>
+                </div>
+
+                <div class="image-card-content">
+                    <span class="mini-label">{{ workout.get_level_display }}</span>
+                    <h3>{{ workout.title }}</h3>
+                    <p>{{ workout.description }}</p>
+
+                    <div class="workout-meta">
+                        <i class="bi bi-person"></i>
+                        {% if workout.trainer %}
+                            {{ workout.trainer.full_name }}
+                        {% else %}
+                            Trener belgilanmagan
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'plans' %}" class="btn btn-primary">
+                        Abonement tanlash <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <h3>Mashg‘ulotlar mavjud emas</h3>
+                <p>Admin paneldan mashg‘ulot qo‘shing.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

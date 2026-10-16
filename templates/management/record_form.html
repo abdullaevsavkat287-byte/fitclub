@@ -1,0 +1,66 @@
+
+{% extends "management/base.html" %}
+
+{% block title %}{{ section_title }} | FitClub PRO{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">FITCLUB / EDITOR</div>
+
+        <h1>
+            {% if editing %}
+                Tahrirlash<span>.</span>
+            {% else %}
+                Yangi qo‘shish<span>.</span>
+            {% endif %}
+        </h1>
+
+        <p>{{ section_title }}</p>
+    </div>
+</div>
+
+<section class="panel editor-panel">
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {% for error in form.non_field_errors %}
+            <p class="field-error">{{ error }}</p>
+        {% endfor %}
+
+        <div class="form-actions">
+            <button type="submit" class="action-btn">
+                <i class="bi bi-check2-circle"></i>
+                Saqlash
+            </button>
+
+            <a class="cancel-btn"
+               href="{% url 'management:records' section %}">
+                Bekor qilish
+            </a>
+        </div>
+    </form>
+
+</section>
+
+{% endblock %}
